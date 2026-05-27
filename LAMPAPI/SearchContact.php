@@ -9,10 +9,49 @@
 	}
 	else
 	{
-		$search = "%" . $inData["search"] . "%";
+		if( empty(trim($inData["search"])) )
+		{
+			returnWithError("Search field is empty");
+			exit;
+		}
  
-		$stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, AddDate FROM Contacts WHERE UserID=? AND (FirstName LIKE ? OR LastName LIKE ? OR Phone LIKE ? OR Email LIKE ?)");
-		$stmt->bind_param("issss", $inData["userId"], $search, $search, $search, $search);
+		$parts = explode(" ", trim($inData["search"]), 2);
+ 
+		if( count($parts) == 2 )
+		{
+			$firstName = "%" . $parts[0] . "%";
+			$lastName  = "%" . $parts[1] . "%";
+			$fullName  = "%" . trim($inData["search"]) . "%";
+ 
+			$stmt = $conn->prepare(
+				"SELECT ID, FirstName, LastName, Phone, Email, AddDate
+				 FROM Contacts
+				 WHERE UserID=?
+				 AND (
+				 	CONCAT(FirstName, ' ', LastName) LIKE ?
+				 	OR (FirstName LIKE ? AND LastName LIKE ?)
+				 )"
+			);
+			$stmt->bind_param("isss", $inData["userId"], $fullName, $firstName, $lastName);
+		}
+		else
+		{
+			$search = "%" . $inData["search"] . "%";
+ 
+			$stmt = $conn->prepare(
+				"SELECT ID, FirstName, LastName, Phone, Email, AddDate
+				 FROM Contacts
+				 WHERE UserID=?
+				 AND (
+				 	FirstName LIKE ?
+				 	OR LastName LIKE ?
+				 	OR Phone LIKE ?
+				 	OR Email LIKE ?
+				 )"
+			);
+			$stmt->bind_param("issss", $inData["userId"], $search, $search, $search, $search);
+		}
+ 
 		$stmt->execute();
 		$result = $stmt->get_result();
  
