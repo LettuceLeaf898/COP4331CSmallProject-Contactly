@@ -1,4 +1,3 @@
-Searchcontacts · PHP
 <?php
  
 	$inData = getRequestInfo();
