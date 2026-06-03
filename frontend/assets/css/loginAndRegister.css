@@ -338,7 +338,6 @@ p {
   gap: 16px;
 }
 
-
 @media (max-width: 1068px) {
   .login-page {
     flex-direction: column;
