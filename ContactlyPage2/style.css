@@ -11,6 +11,7 @@ body {
     align-items: center;
     padding: 10px 20px;
     background-color: #ffffff; /* Example background color */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Flex direction column stacks the brand and the subtitle */
@@ -242,4 +243,46 @@ h1 + h2 {
     width: 16px;
     height: 16px;
     object-fit: contain;
+}
+
+.bg-circle {
+    position: fixed;          /* stays put relative to the viewport */
+    border-radius: 50%;       /* makes the div a circle */
+    background-color: #d6e0f3; /* pale blue */
+    z-index: -1;              /* sits behind everything */
+    pointer-events: none;     /* clicks pass through it */
+}
+
+.bg-circle-left {
+    width: 300px;
+    height: 300px;
+    top: 130px;
+    left: -120px;            /* negative = hangs off the edge, so you see a partial circle */
+}
+
+.bg-circle-right {
+    width: 350px;
+    height: 350px;
+    bottom: -100px;
+    right: -80px;
+}
+
+.bg-dots {
+    position: fixed;
+    z-index: -1;
+    pointer-events: none;
+    width: 200px;
+    height: 200px;
+    background-image: radial-gradient(#b9c7e0 2px, transparent 2px);
+    background-size: 24px 24px;   /* spacing between dots */
+}
+
+.bg-dots-right {
+    top: 250px;
+    right: 120px;
+}
+
+.bg-dots-left {
+    top: 520px;
+    left: 90px;
 }
