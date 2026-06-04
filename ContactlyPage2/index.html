@@ -27,11 +27,11 @@
 
             <div class="dropdown-menu" id="dropdownMenu">
                 <a href="/account">
-                    <img src="user.png" alt="" class="menu-icon">
+                    <img src="User.png" alt="" class="menu-icon">
                     Account
                 </a>
                 <a href="/logout">
-                    <img src="logout.png" alt="" class="menu-icon">
+                    <img src="Logout.png" alt="" class="menu-icon">
                     Logout
                 </a>
             </div>
@@ -86,46 +86,64 @@
         });
     </script>
 
-    <script>
-    async function loadContacts() {
-        const grid = document.getElementById('contactsGrid');
+   <script>
+async function loadContacts() {
+    const grid = document.getElementById('contactsGrid');
 
-        try {
-            const res = await fetch('LAMPAPI/GetContacts.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: 5 })   // 5 = John, who has a contact
-            });
-            const data = await res.json();
-            console.log(data);   // <-- check this in the browser console (F12)
+    try {
+        const res = await fetch('LAMPAPI/GetContacts.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: 5 })   // 5 = John, who has a contact
+        });
+        const data = await res.json();
+        console.log(data);   // check this in the browser console (F12)
 
-            const contacts = data.contacts || [];
+        const contacts = data.contacts || [];
 
-            // Update both the badge and the results line with the real count
-            document.getElementById('countBadge').textContent =
-                contacts.length + ' Contacts';
-            document.querySelector('.results-text').textContent =
-                'Results: ' + contacts.length + ' Contacts';
+        // Update the badge and results line with the real count
+        document.getElementById('countBadge').textContent =
+            contacts.length + ' Contacts';
+        document.querySelector('.results-text').textContent =
+            'Results: ' + contacts.length + ' Contacts';
 
-            grid.innerHTML = contacts.map(c => `
-                <div class="contact-card">
-                    <div class="card-header">
-                        <h3 class="contact-name">${c.FirstName} ${c.LastName}</h3>
-                        <button class="card-menu">⋮</button>
-                    </div>
-                    <div class="contact-row"><span>${c.Email}</span></div>
-                    <div class="contact-row"><span>${c.Phone}</span></div>
-                    <div class="contact-row"><span>${c.AddDate}</span></div>
+        grid.innerHTML = contacts.map(c => `
+            <div class="contact-card">
+                <div class="card-header">
+                    <h3 class="contact-name">${c.FirstName} ${c.LastName}</h3>
+                    <button class="card-menu">⋮</button>
                 </div>
-            `).join('');
+                <div class="contact-row">
+                    <img src="Email.png" alt="" class="row-icon">
+                    <span>${c.Email}</span>
+                </div>
+                <div class="contact-row">
+                    <img src="Phone.png" alt="" class="row-icon">
+                    <span>${c.Phone}</span>
+                </div>
+                <div class="contact-row">
+                    <img src="Clock.png" alt="" class="row-icon">
+                    <span>${formatDate(c.AddDate)}</span>
+                </div>
+            </div>
+        `).join('');
 
-        } catch (err) {
-            console.error(err);
-            grid.innerHTML = '<p>Could not load contacts.</p>';
-        }
+    } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<p>Could not load contacts.</p>';
     }
+}
 
-    loadContacts();
-    </script>
+// Turn "2026-05-21 16:03:49" into "May 21, 2026"
+function formatDate(dbDate) {
+    if (!dbDate) return '';
+    const d = new Date(dbDate.replace(' ', 'T'));
+    return d.toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
+    });
+}
+
+loadContacts();
+</script>
 </body>
 </html>
