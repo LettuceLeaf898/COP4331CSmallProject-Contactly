@@ -18,23 +18,23 @@
             </div>
             <span class="logo-subtitle">Contact Manager</span>
         </a>
-        
+
         <div class="user-profile">
             <button class="dropdown-trigger" id="profileBtn">
                 <span class="user-name">Jane Doe</span>
                 <img src="dropDownArrow.png" alt="Arrow" class="dropdown-arrow">
             </button>
-            
+
             <div class="dropdown-menu" id="dropdownMenu">
-    <a href="/account">
-        <img src="user.png" alt="" class="menu-icon">
-        Account
-    </a>
-    <a href="/logout">
-        <img src="logout.png" alt="" class="menu-icon">
-        Logout
-    </a>
-</div>
+                <a href="/account">
+                    <img src="user.png" alt="" class="menu-icon">
+                    Account
+                </a>
+                <a href="/logout">
+                    <img src="logout.png" alt="" class="menu-icon">
+                    Logout
+                </a>
+            </div>
         </div>
     </header>
 
@@ -44,10 +44,10 @@
 
         <div class="search-action-container">
             <form class="search-container" action="/search" method="GET">
-                <input 
-                    type="search" 
-                    class="search-bar" 
-                    placeholder="Search contacts..." 
+                <input
+                    type="search"
+                    class="search-bar"
+                    placeholder="Search contacts..."
                     name="q"
                     autocomplete="off"
                 >
@@ -56,12 +56,16 @@
                 <span class="plus-icon">+</span> Add Contact
             </button>
         </div>
+
         <div class="contacts-count">
             <img src="users.png" alt="" class="count-icon">
-            <span>100 Contacts</span>
+            <span id="countBadge"># Contacts</span>
         </div>
 
-<h6 class="results-text">Results: # Contacts</h6>
+        <h6 class="results-text">Results: # Contacts</h6>
+
+        <!-- THIS was missing: the container the script fills with cards -->
+        <div class="contacts-grid" id="contactsGrid"></div>
     </main>
 
     <script>
@@ -82,5 +86,46 @@
         });
     </script>
 
+    <script>
+    async function loadContacts() {
+        const grid = document.getElementById('contactsGrid');
+
+        try {
+            const res = await fetch('LAMPAPI/GetContacts.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: 5 })   // 5 = John, who has a contact
+            });
+            const data = await res.json();
+            console.log(data);   // <-- check this in the browser console (F12)
+
+            const contacts = data.contacts || [];
+
+            // Update both the badge and the results line with the real count
+            document.getElementById('countBadge').textContent =
+                contacts.length + ' Contacts';
+            document.querySelector('.results-text').textContent =
+                'Results: ' + contacts.length + ' Contacts';
+
+            grid.innerHTML = contacts.map(c => `
+                <div class="contact-card">
+                    <div class="card-header">
+                        <h3 class="contact-name">${c.FirstName} ${c.LastName}</h3>
+                        <button class="card-menu">⋮</button>
+                    </div>
+                    <div class="contact-row"><span>${c.Email}</span></div>
+                    <div class="contact-row"><span>${c.Phone}</span></div>
+                    <div class="contact-row"><span>${c.AddDate}</span></div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = '<p>Could not load contacts.</p>';
+        }
+    }
+
+    loadContacts();
+    </script>
 </body>
 </html>
