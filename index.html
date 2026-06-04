@@ -10,9 +10,9 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="../assets/css/loginAndRegister.css" />
+    <link rel="stylesheet" href="style.css" />
 
-    <script src="../js/login.js"></script>
+    <!-- <script src="../js/login.js"></script> -->
   </head>
 
   <body>
@@ -20,7 +20,7 @@
       <section class="welcome-section">
         <div class="brand-section">
           <img
-            src="../assets/images/logo.svg"
+            src="frontend/assets/images/logo.svg"
             alt="Contactly Logo"
             class="logo"
           />
@@ -37,14 +37,17 @@
         </div>
         <div class="welcome-image-container">
           <img
-            src="../assets/images/welcomeImage.svg"
+            src="frontend/assets/images/welcomeImage.svg"
             alt="Contactly Welcome Image"
             class="welcome-image"
           />
         </div>
         <div class="welcome-messages">
           <div class="welcome-message-icons">
-            <img src="../assets/images/sort-down.svg" alt="Organize Icon" />
+            <img
+              src="frontend/assets/images/sort-down.svg"
+              alt="Organize Icon"
+            />
           </div>
           <div>
             <h3>Organize</h3>
@@ -54,7 +57,10 @@
             </p>
           </div>
           <div class="welcome-message-icons">
-            <img src="../assets/images/arrow-repeat.svg" alt="Sync Icon" />
+            <img
+              src="frontend/assets/images/arrow-repeat.svg"
+              alt="Sync Icon"
+            />
           </div>
           <div>
             <h3>Sync</h3>
@@ -64,7 +70,7 @@
             </p>
           </div>
           <div class="welcome-message-icons">
-            <img src="../assets/images/stack.svg" alt="Manage Icon" />
+            <img src="frontend/assets/images/stack.svg" alt="Manage Icon" />
           </div>
           <div>
             <h3>Manage</h3>
@@ -77,7 +83,7 @@
         <div class="login-card">
           <div class="login-header">
             <img
-              src="../assets/images/logo.svg"
+              src="frontend/assets/images/logo.svg"
               alt="Contactly Logo"
               class="logo-login-card"
             />
@@ -86,13 +92,15 @@
           </div>
 
           <div class="login-register">
-            <a href="login.html" class="auth-button active-auth-button"
+            <a href="index.html" class="auth-button active-auth-button"
               >Login</a
             >
 
             <div class="divider"></div>
 
-            <a href="register.html" class="auth-button">Register</a>
+            <a href="frontend/pages/register.html" class="auth-button"
+              >Register</a
+            >
           </div>
 
           <form id="loginForm">
@@ -101,7 +109,7 @@
                 <label for="email" class="form-label">Email</label>
                 <div class="input-icon-wrapper">
                   <img
-                    src="../assets/images/envelope-fill.svg"
+                    src="frontend/assets/images/envelope-fill.svg"
                     alt="Email icon"
                     class="input-icon"
                   />
@@ -121,7 +129,7 @@
 
                 <div class="password-input-wrapper">
                   <img
-                    src="../assets/images/lock-fill.svg"
+                    src="frontend/assets/images/lock-fill.svg"
                     alt="Password icon"
                     class="password-left-icon"
                   />
@@ -140,7 +148,7 @@
                     id="passwordToggle"
                   >
                     <img
-                      src="../assets/images/eye-fill.svg"
+                      src="frontend/assets/images/eye-fill.svg"
                       alt="Show password"
                       class="password-eye-icon"
                       id="passwordEyeIcon"
@@ -149,7 +157,7 @@
                 </div>
               </div>
             </div>
-
+            <p id="loginMessage" class="message"></p>
             <button
               type="submit"
               class="btn btn-primary login-button"
@@ -162,13 +170,13 @@
           <div class="register-link">
             <p>
               Don't have an account?
-              <a href="register.html">Register here</a>
+              <a href="frontend/pages/register.html">Register here</a>
             </p>
           </div>
         </div>
       </section>
     </main>
 
-    <script src="../assets/js/login.js"></script>
+    <script src="frontend/js/login.js"></script>
   </body>
 </html>
