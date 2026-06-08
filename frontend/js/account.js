@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
           login: editEmail,
           password: newPassword,
           email: editEmail,
-          phoneNumber: editPhone,
+          phone: editPhone,
         }),
       })
         .then(function (response) {
@@ -132,8 +132,12 @@ document.addEventListener("DOMContentLoaded", function () {
           updateMessage.textContent = "Account updated successfully!";
           updateMessage.classList.add("success");
 
+          localStorage.setItem("email", editEmail);
+          localStorage.setItem("phone", editPhone);
+          localStorage.setItem("password", newPassword);
+
           setTimeout(function () {
-            window.location.href = "/index.html";
+            window.location.href = "./account.html";
           }, 1000);
         })
         .catch(function (error) {

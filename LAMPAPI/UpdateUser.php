@@ -18,17 +18,16 @@
 	{
 		$phone = formatPhone($inData["phone"]);
  
-		$stmt = $conn->prepare("UPDATE Contacts SET FirstName=?, LastName=?, Phone=?, Email=? WHERE ID=? AND UserID=?");
-		$stmt->bind_param("ssssii", $inData["firstName"], $inData["lastName"], $phone, $inData["email"], $inData["contactId"], $inData["userId"]);
-		$stmt->execute();
+		$stmt = $conn->prepare("UPDATE Users SET Email=?, PhoneNumber=?, Password=? WHERE ID=?");
+		$stmt->bind_param("sssi", $inData["email"], $phone, $inData["password"], $inData["userId"]);
  
-		if( $stmt->affected_rows > 0 )
+		if( $stmt->execute() )
 		{
 			returnWithError("");
 		}
 		else
 		{
-			returnWithError("Contact not found");
+			returnWithError("Update failed: " . $stmt->error);
 		}
  
 		$stmt->close();
@@ -97,4 +96,5 @@
 		$retValue = '{"error":"' . $err . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
+ 
 ?>
