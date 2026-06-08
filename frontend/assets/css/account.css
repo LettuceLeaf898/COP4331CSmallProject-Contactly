@@ -1,11 +1,9 @@
+/* ============================================
+   BASE / RESET
+   ============================================ */
 * {
   box-sizing: border-box;
 }
-
-/* body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-} */
 
 html,
 body {
@@ -19,10 +17,14 @@ p {
   color: #666;
 }
 
+/* ============================================
+   PAGE LAYOUT
+   ============================================ */
 .home-page {
   display: flex;
   flex-direction: column;     /* stack children vertically */
-  align-items: center;        /* center them horizontally */
+  align-items: center;        /* horizontal centering */
+  justify-content: center;    /* vertical centering of the group */
   min-height: calc(100vh - 80px);
 }
 
@@ -37,16 +39,17 @@ p {
   z-index: -1;
 }
 
-
-
 .contacts-section {
-  padding-top: 0;
   width: 100%;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* ============================================
+   PAGE HEADER (heading + subtitle)
+   ============================================ */
 .home-header {
   width: 100%;
   text-align: center;
@@ -66,6 +69,23 @@ p {
   gap: 20px;
 }
 
+/* ============================================
+   CENTERED WHITE BOX
+   ============================================ */
+.center-box {
+  width: 400px;
+  max-width: 90%;             /* keeps it from overflowing on small screens */
+  min-height: 300px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+/* ============================================
+   TOP BAR / NAVBAR
+   ============================================ */
 .top-bar {
   width: 100%;
   height: 78px;
@@ -99,6 +119,9 @@ p {
   margin-left: 62px;
 }
 
+/* ============================================
+   USER PROFILE / DROPDOWN MENU
+   ============================================ */
 .user-profile {
   position: relative;
 }
@@ -168,12 +191,14 @@ p {
   height: 16px;
 }
 
-
 .count-icon {
   width: 18px;
   height: 18px;
 }
 
+/* ============================================
+   MEDIA QUERIES
+   ============================================ */
 @media (max-width: 1068px) {
   .home-search-add {
     display: flex;
@@ -194,24 +219,6 @@ p {
     margin-right: 0px;
   }
 }
-
-      .home-page {
-        display: flex;
-        justify-content: center;   /* horizontal centering */
-        align-items: center;       /* vertical centering */
-        min-height: calc(100vh - 80px); /* full screen minus header height */
-      }
-
-      .center-box {
-        width: 400px;
-        max-width: 90%;            /* keeps it from overflowing on small screens */
-        min-height: 300px;
-        background: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        padding: 2rem;
-      }
 
 @media (max-width: 770px) {
   .search-container {
