@@ -293,6 +293,7 @@ p {
 }
 
 .login-button {
+  color: white;
   width: 100%;
   padding: 10px;
   font-weight: 600;
@@ -312,7 +313,7 @@ p {
 
 .message {
   min-height: 24px;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 12px;
 }
 
