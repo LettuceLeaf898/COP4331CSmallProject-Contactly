@@ -1,0 +1,407 @@
+* {
+  box-sizing: border-box;
+}
+
+h6 {
+  color: black;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+  color: #666;
+}
+
+/* .account-page {
+  display: flex;
+  position: relative;
+  isolation: isolate;
+} */
+
+.account-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("../images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.top-bar {
+  width: 100%;
+  height: 78px;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  z-index: 10;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-logo {
+  width: 170px;
+  height: auto;
+  display: block;
+}
+
+.user-profile {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  font-family: inherit;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #142153;
+}
+
+.dropdown-arrow {
+  width: 19px;
+  height: auto;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background-color: #ffffff;
+  min-width: 150px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: none;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu a,
+.dropdown-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  background: white;
+  border: none;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.dropdown-menu a:hover,
+.dropdown-logout:hover {
+  background-color: #f3f4f6;
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.account-header {
+  width: 100%;
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+
+.account-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.account-header h1 {
+  font-weight: 700;
+  font-size: 48px;
+  margin: 0;
+}
+
+.account-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.account-info-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.account-info-title {
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.account-info-content h6 {
+  margin-top: 25px;
+}
+
+.divider {
+  width: auto;
+  height: 1px;
+  background-color: #ced4da;
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.account-info-content h6 {
+  font-weight: 600;
+}
+
+.date-created {
+  display: flex;
+  gap: 15px;
+}
+
+.date-created img {
+  margin-top: -15px;
+}
+
+.date-created p {
+  margin-top: 3px;
+}
+
+.delete-button {
+  color: #666;
+  width: 100%;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-weight: 600;
+  margin-top: 30px;
+  border-radius: 30px;
+  background-color: #e8edf4;
+  border: none;
+}
+
+.delete-button:hover {
+  background-color: #d6e5fa;
+}
+
+.delete-button:active {
+  transform: scale(0.99);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: none;
+}
+
+.delete-button-actual {
+  color: white;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-radius: 30px;
+  background-color: #c35d5a;
+  border: none;
+}
+
+.delete-button-actual:hover {
+  background-color: #a75854;
+}
+
+.delete-button-actual:active {
+  background-color: #a75854;
+  transform: scale(0.99);
+}
+
+.edit-button {
+  color: white;
+  width: 100%;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-weight: 600;
+  margin-top: 30px;
+  border-radius: 30px;
+  background-color: #142153;
+  border: none;
+}
+
+.edit-button:hover {
+  background-color: #26346d;
+}
+
+.edit-button:active {
+  transform: scale(0.99);
+}
+
+.edit-button-actual {
+  color: white;
+  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-radius: 30px;
+  background-color: #142153;
+  border: none;
+}
+
+.edit-button-actual:hover {
+  background-color: #26346d;
+}
+
+.edit-button-actual:active {
+  background-color: #26346d;
+  transform: scale(0.99);
+}
+
+.cancel-button {
+  font-weight: 400;
+  font-size: 18px;
+  color: #666;
+  background-color: white;
+  border: none;
+}
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+}
+
+.account-edit-delete {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group input {
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+}
+
+.input-icon-wrapper input.form-control.custom-input {
+  padding-left: 48px;
+}
+
+.message {
+  min-height: 24px;
+  font-size: 16px;
+  margin-bottom: -22px;
+}
+
+.message.error {
+  color: #dc3545;
+}
+
+.message.success {
+  color: #198754;
+}
+
+.modal-body{
+  margin-top: 10px;
+}
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper .password-input {
+  width: 100%;
+  height: 48px;
+  border-radius: 24px;
+  border: 1px solid #dee2e6;
+  padding-left: 52px;
+  padding-right: 52px;
+}
+
+.password-left-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  height: 17px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.password-eye-icon {
+  width: 22px;
+  height: 22px;
+  background: transparent;
+}
+
+.password-eye-icon:hover {
+  background-color: transparent;
+}
