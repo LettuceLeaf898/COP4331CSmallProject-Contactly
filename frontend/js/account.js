@@ -123,6 +123,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
+      if (countPhoneDigits(editPhone) > 15) {
+        updateMessage.textContent = "Phone number cannot exceed 15 digits.";
+        updateMessage.classList.add("error");
+        return;
+      }
+
       if (newPassword !== confirmPassword) {
         updateMessage.textContent = "Passwords do not match.";
         updateMessage.classList.add("error");
@@ -228,8 +234,8 @@ function formatDate(dateString) {
     return "";
   }
 
-  const datePart = dateString.split(" ")[0]; // "2026-06-04"
-  const parts = datePart.split("-"); // ["2026", "06", "04"]
+  const datePart = dateString.split(" ")[0];
+  const parts = datePart.split("-");
 
   const year = Number(parts[0]);
   const month = Number(parts[1]) - 1;
@@ -242,4 +248,8 @@ function formatDate(dateString) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+function countPhoneDigits(phone) {
+  return phone.replace(/\D/g, "").length;
 }

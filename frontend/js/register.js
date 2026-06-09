@@ -50,6 +50,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
+    if (countPhoneDigits(phone) > 15) {
+      registerMessage.textContent = "Phone number cannot exceed 15 digits.";
+      registerMessage.classList.add("error");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       registerMessage.textContent = "Passwords do not match.";
       registerMessage.classList.add("error");
@@ -96,3 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
+
+function countPhoneDigits(phone) {
+  return phone.replace(/\D/g, "").length;
+}
