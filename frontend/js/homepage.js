@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const logoutButton = document.getElementById("logoutButton");
   const userName = document.getElementById("userName");
 
+  const addContactForm = document.getElementById("addContactForm");
+  const userId = localStorage.getItem("userId");
+
   const firstName = localStorage.getItem("firstName");
   const lastName = localStorage.getItem("lastName");
 
@@ -24,4 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.clear();
     window.location.href = "../../index.html";
   });
+
+  
 });

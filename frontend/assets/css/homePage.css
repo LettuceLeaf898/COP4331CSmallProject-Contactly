@@ -281,3 +281,129 @@ p {
     height: 46px;
   }
 }
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+}
+
+.modal-body {
+  margin-top: 10px;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+/* Side-by-side rows */
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Plain inputs (no icon) */
+.form-group input.custom-input {
+  border-radius: 30px;
+  padding: 10px 16px;
+}
+
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+}
+
+/* Inputs with a left icon keep room for it */
+.input-icon-wrapper input.form-control.custom-input {
+  padding-left: 48px;
+}
+
+/* Read-only Date Created */
+.date-created {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+}
+
+.date-created .calendar-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.date-created p {
+  margin: 0;
+}
+
+/* Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: none;
+}
+
+.modal-delete-button {
+  color: #666;
+  padding: 10px 24px;
+  font-weight: 600;
+  border-radius: 30px;
+  background-color: #e8edf4;
+  border: none;
+}
+
+.modal-delete-button:hover {
+  background-color: #d6e5fa;
+}
+
+.modal-delete-button:active {
+  transform: scale(0.99);
+}
+
+.edit-button-actual {
+  color: white;
+  padding: 10px 28px;
+  font-weight: 600;
+  border-radius: 30px;
+  background-color: #142153;
+  border: none;
+}
+
+.edit-button-actual:hover {
+  background-color: #26346d;
+}
+
+.edit-button-actual:active {
+  background-color: #26346d;
+  transform: scale(0.99);
+}
+
+.message {
+  min-height: 24px;
+  font-size: 16px;
+  margin-bottom: -12px;
+  margin-left: 20px;
+}
+
+.message.error {
+  color: #dc3545;
+}
+
+.message.success {
+  color: #198754;
+}
