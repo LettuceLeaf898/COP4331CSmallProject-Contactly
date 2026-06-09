@@ -1,5 +1,11 @@
 <?php
- 
+	
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Methods: POST');
+	header('Access-Control-Allow-Headers: Content-Type');
+
+	header('Content-Type: application/json');
+
 	$inData = getRequestInfo();
  
 	$conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331");

@@ -1,5 +1,9 @@
 <?php
- 
+	
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Methods: POST');
+	header('Access-Control-Allow-Headers: Content-Type');
+
 	header('Content-Type: application/json');
  
 	require_once 'vendor/autoload.php';
@@ -18,8 +22,8 @@
 	{
 		$phone = formatPhone($inData["phone"]);
  
-		$stmt = $conn->prepare("UPDATE Users SET Login=?, Email=?, PhoneNumber=?, Password=? WHERE ID=?");
-        $stmt->bind_param("ssssi", $inData["login"], $inData["email"], $phone, $inData["password"], $inData["userId"]);
+		$stmt = $conn->prepare("UPDATE Users SET Email=?, PhoneNumber=?, Password=? WHERE ID=?");
+		$stmt->bind_param("sssi", $inData["email"], $phone, $inData["password"], $inData["userId"]);
  
 		if( $stmt->execute() )
 		{
