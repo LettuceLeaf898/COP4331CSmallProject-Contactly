@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("userId", data.id);
         localStorage.setItem("firstName", data.firstName);
         localStorage.setItem("lastName", data.lastName);
+        localStorage.setItem("login", data.login);
         localStorage.setItem("email", data.email);
         localStorage.setItem("phone", data.phoneNumber);
         localStorage.setItem("dateCreated", data.creationDate);

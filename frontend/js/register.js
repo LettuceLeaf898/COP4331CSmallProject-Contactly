@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         login: email,
         password: newPassword,
         email: email,
-        phoneNumber: phone,
+        phone: phone,
       }),
     })
       .then(function (response) {
