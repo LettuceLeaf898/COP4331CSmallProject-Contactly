@@ -1,6 +1,9 @@
-
 <?php
- 
+
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Methods: POST');
+	header('Access-Control-Allow-Headers: Content-Type');
+	
 	header('Content-Type: application/json');
  
 	require_once 'vendor/autoload.php';
@@ -9,7 +12,7 @@
 	use libphonenumber\PhoneNumberFormat;
  
 	$inData = getRequestInfo();
- 
+	
 	$conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331");
 	if( $conn->connect_error )
 	{
@@ -17,6 +20,7 @@
 	}
 	else
 	{
+		// Check duplicate login
 		$stmt = $conn->prepare("SELECT ID FROM Users WHERE Login=?");
 		$stmt->bind_param("s", $inData["login"]);
 		$stmt->execute();
@@ -26,6 +30,7 @@
 			exit;
 		}
  
+		// Check duplicate email
 		$stmt = $conn->prepare("SELECT ID FROM Users WHERE Email=?");
 		$stmt->bind_param("s", $inData["email"]);
 		$stmt->execute();
@@ -35,6 +40,7 @@
 			exit;
 		}
  
+		// Check duplicate phone
 		$phone = formatPhone($inData["phone"]);
 		$stmt = $conn->prepare("SELECT ID FROM Users WHERE PhoneNumber=?");
 		$stmt->bind_param("s", $phone);
@@ -45,6 +51,7 @@
 			exit;
 		}
  
+		// Insert user
 		$stmt = $conn->prepare("INSERT INTO Users (FirstName, LastName, Login, Password, Email, PhoneNumber) VALUES (?,?,?,?,?,?)");
 		$stmt->bind_param("ssssss", $inData["firstName"], $inData["lastName"], $inData["login"], $inData["password"], $inData["email"], $phone);
  
