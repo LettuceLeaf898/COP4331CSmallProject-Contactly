@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const logoutButton = document.getElementById("logoutButton");
   const userName = document.getElementById("userName");
   const accountUserName = document.getElementById("accountUserName");
+  const displayFirstName = document.getElementById("displayFirstName");
+  const displayLastName = document.getElementById("displayLastName");
+  const displayEmail = document.getElementById("displayEmail");
+  const displayPhone = document.getElementById("displayPhone");
+  const displayDateCreated = document.getElementById("displayDateCreated");
   const firstName = localStorage.getItem("firstName");
   const lastName = localStorage.getItem("lastName");
   const email = localStorage.getItem("email");
@@ -39,19 +44,41 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   if (firstName && lastName) {
-    userName.textContent = `${firstName} ${lastName}`;
-    accountUserName.textContent = `${firstName} ${lastName}`;
+    const fullName = `${firstName} ${lastName}`;
+
+    userName.textContent = fullName;
+    accountUserName.textContent = fullName;
   }
 
-  if (email) {
+  if (firstName && displayFirstName) {
+    displayFirstName.textContent = firstName;
+  }
+
+  if (lastName && displayLastName) {
+    displayLastName.textContent = lastName;
+  }
+
+  if (email && displayEmail) {
+    displayEmail.textContent = email;
+  }
+
+  if (phone && displayPhone) {
+    displayPhone.textContent = phone;
+  }
+
+  if (dateCreated && displayDateCreated) {
+    displayDateCreated.textContent = formatDate(dateCreated);
+  }
+
+  if (email && editEmail) {
     editEmail.value = email;
   }
 
-  if (phone) {
+  if (phone && editPhone) {
     editPhone.value = phone;
   }
 
-  if (storedPassword) {
+  if (storedPassword && editNewPassword && editConfirmPassword) {
     editNewPassword.value = storedPassword;
     editConfirmPassword.value = storedPassword;
   }
@@ -132,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
           updateMessage.textContent = "Account updated successfully!";
           updateMessage.classList.add("success");
 
+          localStorage.setItem("login", editEmail);
           localStorage.setItem("email", editEmail);
           localStorage.setItem("phone", editPhone);
           localStorage.setItem("password", newPassword);
@@ -194,3 +222,24 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+function formatDate(dateString) {
+  if (!dateString) {
+    return "";
+  }
+
+  const datePart = dateString.split(" ")[0]; // "2026-06-04"
+  const parts = datePart.split("-"); // ["2026", "06", "04"]
+
+  const year = Number(parts[0]);
+  const month = Number(parts[1]) - 1;
+  const day = Number(parts[2]);
+
+  const date = new Date(year, month, day);
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
