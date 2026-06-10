@@ -7,11 +7,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const addContactForm = document.getElementById("addContactForm");
   const userId = localStorage.getItem("userId");
 
+  const contactsCount = document.getElementById("contactsCount");
+  const contactCards = document.querySelectorAll(".contact-card");
+
+
   const firstName = localStorage.getItem("firstName");
   const lastName = localStorage.getItem("lastName");
 
   if (firstName && lastName) {
     userName.textContent = `${firstName} ${lastName}`;
+  }
+
+  if (contactsCount) {
+  const count = contactCards.length;
+  contactsCount.textContent = `${count} results`;
   }
 
   profileBtn.addEventListener("click", function (event) {
@@ -27,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.clear();
     window.location.href = "../../index.html";
   });
+
+  
 
   
 });
