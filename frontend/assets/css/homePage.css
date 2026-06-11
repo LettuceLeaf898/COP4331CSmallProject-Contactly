@@ -573,22 +573,39 @@ p {
    Search autocomplete suggestions (omnibox)
    ============================================ */
 
+/* The wrapper the dropdown anchors to. Must stay position: relative. */
+.search-container {
+  position: relative;
+}
+
 .search-suggestions {
+  /* Hidden until it has results */
   display: none;
+
+  /* Float directly BELOW the search bar, same width, left-aligned */
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  right: 0;
+  width: 100%;
+
+  /* Defensive resets in case parent flex/grid rules leak in */
+  flex: none;
+  margin: 0;
+  padding: 0;
+  transform: none;
+
+  /* Design-system polish */
   background-color: #ffffff;
+  border: 1px solid #eef0f4;
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
   overflow: hidden;
-  z-index: 1100;
+  z-index: 2000;
   text-align: left;
 }
 
 .search-suggestions.show {
-  display: block;
+  display: block; /* block = rows stack vertically */
 }
 
 .suggestion-item {
@@ -626,15 +643,6 @@ p {
   font-weight: 700;
 }
 
-.suggestion-secondary {
-  color: #888;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-
 .suggestion-search-row .suggestion-name {
   color: #333;
   font-weight: 400;
@@ -644,4 +652,29 @@ p {
   padding: 14px 18px;
   color: #888;
   font-size: 15px;
+}
+
+.cancel-button {
+  font-weight: 400;
+  font-size: 18px;
+  color: #666;
+  background-color: white;
+  border: none;
+}
+
+.delete-button-actual {
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: #c35d5a;
+  border: none;
+}
+
+.delete-button-actual:hover {
+  background-color: #a75854;
+}
+
+.delete-button-actual:active {
+  background-color: #a75854;
+  transform: scale(0.99);
 }

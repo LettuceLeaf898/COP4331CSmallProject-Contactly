@@ -31,8 +31,27 @@ document.addEventListener("DOMContentLoaded", function () {
   // Search autocomplete (omnibox-style dropdown)
   // ============================================
   const searchInputEl = document.getElementById("search");
-  const suggestionsBox = document.getElementById("searchSuggestions");
   const MAX_SUGGESTIONS = 6;
+
+  // Anchor the dropdown inside .search-container so it always drops
+  // directly below the search bar. If the div is missing from the HTML
+  // or was pasted in the wrong place, this creates/moves it.
+  const searchContainerEl = document.querySelector(".search-container");
+  let suggestionsBox = document.getElementById("searchSuggestions");
+
+  if (searchContainerEl) {
+    searchContainerEl.style.position = "relative";
+
+    if (!suggestionsBox) {
+      suggestionsBox = document.createElement("div");
+      suggestionsBox.id = "searchSuggestions";
+      suggestionsBox.className = "search-suggestions";
+    }
+
+    if (suggestionsBox.parentElement !== searchContainerEl) {
+      searchContainerEl.appendChild(suggestionsBox);
+    }
+  }
 
   let suggestDebounceTimer = null;
   let suggestionContacts = [];
@@ -153,9 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
       row.className = "suggestion-item";
 
       row.innerHTML = `
-        <img src="../assets/images/person-fill.svg" alt="" class="suggestion-icon" />
         <span class="suggestion-name">${highlightMatch(fullName, query)}</span>
-        <span class="suggestion-secondary">${escapeHtml(contact.Email)} · ${escapeHtml(contact.Phone)}</span>
       `;
 
       // mousedown (not click) so it fires before the input loses focus
@@ -231,62 +248,91 @@ document.addEventListener("DOMContentLoaded", function () {
   // End search autocomplete
   // ============================================
 
-  if (deleteContactButton) {
-    deleteContactButton.addEventListener("click", function () {
-      const contactId = document.getElementById("editContactId").value;
-      const userId = localStorage.getItem("userId");
-      const editContactMessage = document.getElementById("editContactMessage");
+  const confirmDeleteContactButton = document.getElementById(
+  "confirmDeleteContactButton"
+);
 
-      editContactMessage.textContent = "";
-      editContactMessage.className = "message";
+if (deleteContactButton) {
+  deleteContactButton.addEventListener("click", function () {
+    const editModalElement = document.getElementById("editContactModal");
+    const deleteModalElement = document.getElementById("deleteContactModal");
 
-      if (!contactId || !userId) {
-        editContactMessage.textContent = "Contact or user not found.";
-        editContactMessage.classList.add("error");
-        return;
-      }
+    const deleteContactMessage =
+      document.getElementById("deleteContactMessage");
+    deleteContactMessage.textContent = "";
+    deleteContactMessage.className = "message";
 
-      fetch("/LAMPAPI/DeleteContact.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contactId: Number(contactId),
-          userId: Number(userId),
-        }),
+    // Wait for the edit modal to finish closing, then open the
+    // confirmation modal (avoids Bootstrap backdrop glitches)
+    editModalElement.addEventListener(
+      "hidden.bs.modal",
+      function () {
+        bootstrap.Modal.getOrCreateInstance(deleteModalElement).show();
+      },
+      { once: true }
+    );
+
+    bootstrap.Modal.getOrCreateInstance(editModalElement).hide();
+  });
+}
+
+if (confirmDeleteContactButton) {
+  confirmDeleteContactButton.addEventListener("click", function () {
+    const contactId = document.getElementById("editContactId").value;
+    const userId = localStorage.getItem("userId");
+    const deleteContactMessage =
+      document.getElementById("deleteContactMessage");
+
+    deleteContactMessage.textContent = "";
+    deleteContactMessage.className = "message";
+
+    if (!contactId || !userId) {
+      deleteContactMessage.textContent = "Contact or user not found.";
+      deleteContactMessage.classList.add("error");
+      return;
+    }
+
+    fetch("/LAMPAPI/DeleteContact.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contactId: Number(contactId),
+        userId: Number(userId),
+      }),
+    })
+      .then(function (response) {
+        return response.json();
       })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (data) {
-          console.log("Delete contact response:", data);
+      .then(function (data) {
+        console.log("Delete contact response:", data);
 
-          if (data.error && data.error !== "") {
-            editContactMessage.textContent = data.error;
-            editContactMessage.classList.add("error");
-            return;
-          }
+        if (data.error && data.error !== "") {
+          deleteContactMessage.textContent = data.error;
+          deleteContactMessage.classList.add("error");
+          return;
+        }
 
-          editContactMessage.textContent = "Contact deleted successfully.";
-          editContactMessage.classList.add("success");
+        deleteContactMessage.textContent = "Contact deleted successfully.";
+        deleteContactMessage.classList.add("success");
 
-          setTimeout(function () {
-            const modalElement = document.getElementById("editContactModal");
-            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-            modal.hide();
+        setTimeout(function () {
+          const deleteModalElement =
+            document.getElementById("deleteContactModal");
+          bootstrap.Modal.getOrCreateInstance(deleteModalElement).hide();
 
-            currentContactsPage = 1;
-            loadContacts(currentContactsPage, false);
-          }, 800);
-        })
-        .catch(function (error) {
-          console.error("Delete contact error:", error);
-          editContactMessage.textContent = "Could not connect to the server.";
-          editContactMessage.classList.add("error");
-        });
-    });
-  }
+          currentContactsPage = 1;
+          loadContacts(currentContactsPage, false);
+        }, 800);
+      })
+      .catch(function (error) {
+        console.error("Delete contact error:", error);
+        deleteContactMessage.textContent = "Could not connect to the server.";
+        deleteContactMessage.classList.add("error");
+      });
+  });
+}
 
   if (editContactForm) {
     editContactForm.addEventListener("submit", function (event) {
