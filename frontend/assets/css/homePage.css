@@ -89,7 +89,7 @@ p {
 
 .home-search-add button {
   padding: 10px;
-  font-weight: 600;
+  font-weight: 500;
   border-radius: 30px;
   background-color: #142153;
   border: none;
@@ -236,7 +236,8 @@ p {
   height: 20px;
 }
 
-.contacts-count {
+.see-all-contacts {
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -257,6 +258,49 @@ p {
 @media (max-width: 1068px) {
   .home-search-add {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .home-search-add form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .sort-dropdown,
+  .add-contact {
+    flex: 0 0 auto;
+  }
+
+  /* .sort-dropdown-menu {
+    top: calc(40% + 8px);
+  } */
+
+  .add-icon {
+    display: none;
+  }
+
+  .add-contact button {
+    width: 140px;
+    height: 46px;
+  }
+
+  .add-contact-text {
+    margin-right: 0;
+  }
+
+  .sort-dropdown .sort-dropdown-menu {
+    top: calc(100% + 12px) !important;
+  }
+}
+
+/* @media (max-width: 1068px) {
+  .home-search-add {
+    display: flex;
     flex-direction: column;
     justify-content: center;
   }
@@ -273,12 +317,32 @@ p {
   .add-contact-text {
     margin-right: 0px;
   }
-}
+} */
 
 @media (max-width: 770px) {
   .search-container {
     width: 400px;
     height: 46px;
+  }
+
+  .sort-dropdown .sort-dropdown-menu {
+    top: calc(100% + 14px) !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .contact-card {
+    flex: 0 1 calc(50% - 10px);
+    width: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 700px) {
+  .contact-card {
+    flex: 0 1 100%;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -406,4 +470,314 @@ p {
 
 .message.success {
   color: #198754;
+}
+
+.contacts-scroll-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px 40px;
+  margin-top: 20px;
+}
+
+.contacts-container {
+  width: 100%;
+  max-width: 1160px;
+  max-height: 59vh;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.contact-card {
+  width: 363px;
+  max-width: 100%;
+  position: relative;
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* .contacts-container {
+  width: 100%;
+  max-width: 1140px;
+  max-height: 59vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.contact-card {
+  max-width: 363px;
+  position: relative;
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+} */
+
+.contact-name {
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #142153;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.contact-detail span {
+  color: #666;
+  font-size: 15px;
+}
+
+.contact-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.contact-menu {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.contact-menu:hover {
+  background-color: #f3f4f6;
+}
+
+/* .load-more-wrapper {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+} */
+
+.load-more-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.load-more-button {
+  padding: 10px 28px;
+  font-weight: 600;
+  border-radius: 30px;
+  background-color: #142153;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.load-more-button:hover {
+  background-color: #26346d;
+}
+
+.load-more-button:active {
+  transform: scale(0.99);
+}
+
+.see-all-button {
+  border: none;
+  background: none;
+}
+
+.sort-dropdown {
+  /* width: 400px; */
+  position: relative;
+  width: fit-content;
+}
+
+.sort-dropdown-trigger {
+  width: auto;
+  min-width: max-content;
+  white-space: nowrap;
+  font-weight: 400;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 30px;
+  border: none;
+  background-color: #142153;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.sort-dropdown-trigger:hover {
+  background-color: #26346d;
+}
+
+.sort-dropdown-arrow {
+  width: 20px;
+  height: 20px;
+  /* font-size: 16px;
+  line-height: 1; */
+}
+
+.sort-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(70% + 8px);
+  left: 0;
+  min-width: 170px;
+  background-color: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+}
+
+.sort-dropdown-menu.show {
+  display: block;
+}
+
+.sort-dropdown-menu button {
+  font-weight: 600;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 0px;
+  border: none;
+  background-color: white;
+  color: #142153;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sort-dropdown-menu button:hover {
+  background-color: rgb(221, 221, 221);
+}
+
+/* ============================================
+   Search autocomplete suggestions (omnibox)
+   ============================================ */
+
+/* The wrapper the dropdown anchors to. Must stay position: relative. */
+.search-container {
+  position: relative;
+}
+
+.search-suggestions {
+  /* Hidden until it has results */
+  display: none;
+
+  /* Float directly BELOW the search bar, same width, left-aligned */
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+
+  /* Defensive resets in case parent flex/grid rules leak in */
+  flex: none;
+  margin: 0;
+  padding: 0;
+  transform: none;
+
+  /* Design-system polish */
+  background-color: #ffffff;
+  border: 1px solid #eef0f4;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  z-index: 2000;
+  text-align: left;
+}
+
+.search-suggestions.show {
+  display: block; /* block = rows stack vertically */
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background-color: #f3f4f6;
+}
+
+.suggestion-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.suggestion-name {
+  font-size: 16px;
+  color: #142153;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.suggestion-name strong {
+  font-weight: 700;
+}
+
+.suggestion-search-row .suggestion-name {
+  color: #333;
+  font-weight: 400;
+}
+
+.suggestion-empty {
+  padding: 14px 18px;
+  color: #888;
+  font-size: 15px;
+}
+
+.cancel-button {
+  font-weight: 400;
+  font-size: 18px;
+  color: #666;
+  background-color: white;
+  border: none;
+}
+
+.delete-button-actual {
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: #c35d5a;
+  border: none;
+}
+
+.delete-button-actual:hover {
+  background-color: #a75854;
+}
+
+.delete-button-actual:active {
+  background-color: #a75854;
+  transform: scale(0.99);
 }

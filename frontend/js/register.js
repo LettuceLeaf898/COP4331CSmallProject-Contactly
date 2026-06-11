@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        localStorage.setItem("email", data.email);
+        localStorage.setItem("prefillLoginEmail", email);
 
         registerMessage.textContent = "Account created successfully!";
         registerMessage.classList.add("success");

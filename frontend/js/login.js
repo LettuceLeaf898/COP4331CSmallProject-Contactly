@@ -1,11 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("login.js is connected");
+  //console.log("login.js is connected");
   const loginForm = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
+  const prefillLoginEmail = localStorage.getItem("prefillLoginEmail");
   const passwordInput = document.getElementById("password");
   const loginMessage = document.getElementById("loginMessage");
   const passwordToggle = document.getElementById("passwordToggle");
   const passwordEyeIcon = document.getElementById("passwordEyeIcon");
+
+  if (prefillLoginEmail) {
+    emailInput.value = prefillLoginEmail;
+    localStorage.removeItem("prefillLoginEmail");
+  }
 
   if (passwordToggle) {
     passwordToggle.addEventListener("click", function () {
