@@ -26,19 +26,299 @@ document.addEventListener("DOMContentLoaded", function () {
   const sortDropdownText = document.getElementById("sortDropdownText");
   const editContactForm = document.getElementById("editContactForm");
   const deleteContactButton = document.getElementById("deleteContactButton");
+  const editContactModal = document.getElementById("editContactModal");
+  const addContactModal = document.getElementById("addContactModal");
 
-  if (deleteContactButton) {
-    deleteContactButton.addEventListener("click", function () {
-      const contactId = document.getElementById("editContactId").value;
-      const userId = localStorage.getItem("userId");
+  // ============================================
+  // Search autocomplete (omnibox-style dropdown)
+  // ============================================
+  const searchInputEl = document.getElementById("search");
+  const MAX_SUGGESTIONS = 6;
+
+  // Anchor the dropdown inside .search-container so it always drops
+  // directly below the search bar. If the div is missing from the HTML
+  // or was pasted in the wrong place, this creates/moves it.
+  const searchContainerEl = document.querySelector(".search-container");
+  let suggestionsBox = document.getElementById("searchSuggestions");
+
+  if (searchContainerEl) {
+    searchContainerEl.style.position = "relative";
+
+    if (!suggestionsBox) {
+      suggestionsBox = document.createElement("div");
+      suggestionsBox.id = "searchSuggestions";
+      suggestionsBox.className = "search-suggestions";
+    }
+
+    if (suggestionsBox.parentElement !== searchContainerEl) {
+      searchContainerEl.appendChild(suggestionsBox);
+    }
+  }
+
+  let suggestDebounceTimer = null;
+  let suggestionContacts = [];
+  let activeSuggestionIndex = -1;
+
+  if (searchInputEl && suggestionsBox) {
+    searchInputEl.addEventListener("input", function () {
+      const text = searchInputEl.value.trim();
+
+      clearTimeout(suggestDebounceTimer);
+
+      if (text === "") {
+        hideSuggestions();
+        return;
+      }
+
+      suggestDebounceTimer = setTimeout(function () {
+        fetchSuggestions(text);
+      }, 200);
+    });
+
+    searchInputEl.addEventListener("focus", function () {
+      const text = searchInputEl.value.trim();
+      if (text !== "") {
+        fetchSuggestions(text);
+      }
+    });
+
+    searchInputEl.addEventListener("keydown", function (event) {
+      if (!suggestionsBox.classList.contains("show")) {
+        return;
+      }
+
+      const rows = suggestionsBox.querySelectorAll(".suggestion-item");
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveActiveSuggestion(1, rows);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveActiveSuggestion(-1, rows);
+      } else if (event.key === "Enter") {
+        if (activeSuggestionIndex >= 0 && rows[activeSuggestionIndex]) {
+          event.preventDefault();
+          rows[activeSuggestionIndex].dispatchEvent(new Event("mousedown"));
+        } else {
+          // No row highlighted: let the form submit run the normal search
+          hideSuggestions();
+        }
+      } else if (event.key === "Escape") {
+        hideSuggestions();
+      }
+    });
+
+    // Close the dropdown when clicking anywhere outside the search bar
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".search-container")) {
+        hideSuggestions();
+      }
+    });
+  }
+
+  if (editContactModal) {
+    editContactModal.addEventListener("hidden.bs.modal", function () {
       const editContactMessage = document.getElementById("editContactMessage");
 
       editContactMessage.textContent = "";
       editContactMessage.className = "message";
+    });
+  }
+
+
+  if (addContactModal) {
+  addContactModal.addEventListener("hidden.bs.modal", function () {
+    addContactMessage.textContent = "";
+    addContactMessage.className = "message";
+
+    if (addContactForm) {
+      addContactForm.reset();
+    }
+  });
+
+  addContactModal.addEventListener("show.bs.modal", function () {
+    addContactMessage.textContent = "";
+    addContactMessage.className = "message";
+  });
+}
+
+  function fetchSuggestions(text) {
+    if (!userId) {
+      return;
+    }
+
+    fetch("/LAMPAPI/SearchContact.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: Number(userId),
+        search: text,
+      }),
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        // Ignore stale responses (user kept typing while this was in flight)
+        if (searchInputEl.value.trim() !== text) {
+          return;
+        }
+
+        if (data.error && data.error !== "") {
+          renderSuggestions([], text);
+          return;
+        }
+
+        renderSuggestions(data.contacts.slice(0, MAX_SUGGESTIONS), text);
+      })
+      .catch(function (error) {
+        console.error("Suggestion fetch error:", error);
+        hideSuggestions();
+      });
+  }
+
+  function renderSuggestions(contacts, query) {
+    suggestionsBox.innerHTML = "";
+    suggestionContacts = contacts;
+    activeSuggestionIndex = -1;
+
+    if (contacts.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "suggestion-empty";
+      empty.textContent = "No matching contacts";
+      suggestionsBox.appendChild(empty);
+      suggestionsBox.classList.add("show");
+      return;
+    }
+
+    contacts.forEach(function (contact) {
+      const fullName = contact.FirstName + " " + contact.LastName;
+
+      const row = document.createElement("div");
+      row.className = "suggestion-item";
+
+      row.innerHTML = `
+        <span class="suggestion-name">${highlightMatch(fullName, query)}</span>
+      `;
+
+      // mousedown (not click) so it fires before the input loses focus
+      row.addEventListener("mousedown", function (event) {
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        selectSuggestion(contact);
+      });
+
+      suggestionsBox.appendChild(row);
+    });
+
+    // Final row: run the full search for the typed text
+    const searchRow = document.createElement("div");
+    searchRow.className = "suggestion-item suggestion-search-row";
+    searchRow.innerHTML = `
+      <img src="../assets/images/search.svg" alt="" class="suggestion-icon" />
+      <span class="suggestion-name">Search for "${escapeHtml(query)}"</span>
+    `;
+    searchRow.addEventListener("mousedown", function (event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      hideSuggestions();
+      searchForm.dispatchEvent(new Event("submit", { cancelable: true }));
+    });
+    suggestionsBox.appendChild(searchRow);
+
+    suggestionsBox.classList.add("show");
+  }
+
+  function selectSuggestion(contact) {
+    contactsById[contact.ID] = contact;
+
+    searchInputEl.value = contact.FirstName + " " + contact.LastName;
+    hideSuggestions();
+
+    removeLoadMoreButton();
+    contactsContainer.innerHTML = "";
+    contactsCount.textContent = "1 Contact";
+    renderContacts([contact]);
+  }
+
+  function moveActiveSuggestion(direction, rows) {
+    if (rows.length === 0) {
+      return;
+    }
+
+    if (activeSuggestionIndex >= 0 && rows[activeSuggestionIndex]) {
+      rows[activeSuggestionIndex].classList.remove("active");
+    }
+
+    activeSuggestionIndex += direction;
+
+    if (activeSuggestionIndex < 0) {
+      activeSuggestionIndex = rows.length - 1;
+    } else if (activeSuggestionIndex >= rows.length) {
+      activeSuggestionIndex = 0;
+    }
+
+    rows[activeSuggestionIndex].classList.add("active");
+    rows[activeSuggestionIndex].scrollIntoView({ block: "nearest" });
+  }
+
+  function hideSuggestions() {
+    suggestionsBox.classList.remove("show");
+    suggestionsBox.innerHTML = "";
+    suggestionContacts = [];
+    activeSuggestionIndex = -1;
+  }
+  // ============================================
+  // End search autocomplete
+  // ============================================
+
+  const confirmDeleteContactButton = document.getElementById(
+    "confirmDeleteContactButton",
+  );
+
+  if (deleteContactButton) {
+    deleteContactButton.addEventListener("click", function () {
+      const editModalElement = document.getElementById("editContactModal");
+      const deleteModalElement = document.getElementById("deleteContactModal");
+
+      const deleteContactMessage = document.getElementById(
+        "deleteContactMessage",
+      );
+      deleteContactMessage.textContent = "";
+      deleteContactMessage.className = "message";
+
+      // Wait for the edit modal to finish closing, then open the
+      // confirmation modal (avoids Bootstrap backdrop glitches)
+      editModalElement.addEventListener(
+        "hidden.bs.modal",
+        function () {
+          bootstrap.Modal.getOrCreateInstance(deleteModalElement).show();
+        },
+        { once: true },
+      );
+
+      bootstrap.Modal.getOrCreateInstance(editModalElement).hide();
+    });
+  }
+
+  if (confirmDeleteContactButton) {
+    confirmDeleteContactButton.addEventListener("click", function () {
+      const contactId = document.getElementById("editContactId").value;
+      const userId = localStorage.getItem("userId");
+      const deleteContactMessage = document.getElementById(
+        "deleteContactMessage",
+      );
+
+      deleteContactMessage.textContent = "";
+      deleteContactMessage.className = "message";
 
       if (!contactId || !userId) {
-        editContactMessage.textContent = "Contact or user not found.";
-        editContactMessage.classList.add("error");
+        deleteContactMessage.textContent = "Contact or user not found.";
+        deleteContactMessage.classList.add("error");
         return;
       }
 
@@ -59,18 +339,18 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Delete contact response:", data);
 
           if (data.error && data.error !== "") {
-            editContactMessage.textContent = data.error;
-            editContactMessage.classList.add("error");
+            deleteContactMessage.textContent = data.error;
+            deleteContactMessage.classList.add("error");
             return;
           }
 
-          editContactMessage.textContent = "Contact deleted successfully.";
-          editContactMessage.classList.add("success");
+          deleteContactMessage.textContent = "Contact deleted successfully.";
+          deleteContactMessage.classList.add("success");
 
           setTimeout(function () {
-            const modalElement = document.getElementById("editContactModal");
-            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-            modal.hide();
+            const deleteModalElement =
+              document.getElementById("deleteContactModal");
+            bootstrap.Modal.getOrCreateInstance(deleteModalElement).hide();
 
             currentContactsPage = 1;
             loadContacts(currentContactsPage, false);
@@ -78,8 +358,8 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(function (error) {
           console.error("Delete contact error:", error);
-          editContactMessage.textContent = "Could not connect to the server.";
-          editContactMessage.classList.add("error");
+          deleteContactMessage.textContent = "Could not connect to the server.";
+          deleteContactMessage.classList.add("error");
         });
     });
   }
@@ -242,6 +522,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (searchForm) {
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
+
+      hideSuggestions();
 
       const searchInput = document.getElementById("search");
       const searchText = searchInput.value.trim();
@@ -641,4 +923,36 @@ function formatDate(dateString) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+// Escapes HTML special characters so contact data can't inject markup
+function escapeHtml(text) {
+  if (text === null || text === undefined) {
+    return "";
+  }
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Escapes regex special characters in the user's query
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Bolds the part of the name that matches what the user typed
+function highlightMatch(text, query) {
+  const safeText = escapeHtml(text);
+  const safeQuery = escapeHtml(query);
+
+  if (safeQuery === "") {
+    return safeText;
+  }
+
+  const regex = new RegExp("(" + escapeRegex(safeQuery) + ")", "i");
+  return safeText.replace(regex, "<strong>$1</strong>");
 }
