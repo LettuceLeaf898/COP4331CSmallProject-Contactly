@@ -1,0 +1,511 @@
+swagger: "2.0"
+info:
+  description: This is the API documentation for Contactly
+  version: 1.0.2
+  title: Contactly
+  contact:
+    email: br418416@ucf.edu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: contactly101.xyz
+basePath: /LAMPAPI
+schemes:
+- http
+paths:
+  /Register.php:
+    post:
+      tags:
+      - Users
+      summary: Register a new user
+      description: Creates a new user account in the contacts app
+      operationId: doRegister
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: registerItem
+        description: Register
+        required: false
+        schema:
+          $ref: "#/definitions/Register"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /Login.php:
+    post:
+      tags:
+      - Users
+      summary: Log in to contacts app
+      description: Logs in to the contacts app
+      operationId: doLogin
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: loginItem
+        description: Login
+        required: false
+        schema:
+          $ref: "#/definitions/Login"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/LoginResponse"
+        "404":
+          description: URL Not Found
+  /UpdateUser.php:
+    post:
+      tags:
+      - Users
+      summary: Update a user
+      description: "Updates email, phone, and password for a user"
+      operationId: updateUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: updateUserItem
+        description: Update User
+        required: false
+        schema:
+          $ref: "#/definitions/UpdateUser"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /DeleteUser.php:
+    post:
+      tags:
+      - Users
+      summary: Delete a user
+      description: Deletes a user and all their contacts
+      operationId: deleteUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: deleteUserItem
+        description: Delete User
+        required: false
+        schema:
+          $ref: "#/definitions/DeleteUser"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /AddContact.php:
+    post:
+      tags:
+      - Contacts
+      summary: Add a contact
+      description: Adds a new contact to the contacts app database
+      operationId: addContact
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: addContactItem
+        description: Add Contact
+        required: false
+        schema:
+          $ref: "#/definitions/AddContact"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /UpdateContact.php:
+    post:
+      tags:
+      - Contacts
+      summary: Update a contact
+      description: Updates an existing contact in the contacts app database
+      operationId: updateContact
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: updateContactItem
+        description: Update Contact
+        required: false
+        schema:
+          $ref: "#/definitions/UpdateContact"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /DeleteContact.php:
+    post:
+      tags:
+      - Contacts
+      summary: Delete a contact
+      description: Deletes a contact from the contacts app database
+      operationId: deleteContact
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: deleteContactItem
+        description: Delete Contact
+        required: false
+        schema:
+          $ref: "#/definitions/DeleteContact"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "404":
+          description: URL Not Found
+  /SearchContact.php:
+    post:
+      tags:
+      - Contacts
+      summary: Search contacts
+      description: "Searches contacts by first name, last name, or phone"
+      operationId: searchContact
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: searchContactItem
+        description: Search Contact
+        required: false
+        schema:
+          $ref: "#/definitions/SearchContact"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ContactListResponse"
+        "404":
+          description: URL Not Found
+  /SortContact.php:
+    post:
+      tags:
+      - Contacts
+      summary: Sort contacts
+      description: Returns contacts sorted by a specified field in ASC or DESC order
+      operationId: sortContact
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: sortContactItem
+        description: Sort Contact
+        required: false
+        schema:
+          $ref: "#/definitions/SortContact"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ContactListResponse"
+        "404":
+          description: URL Not Found
+  /GetContacts.php:
+    post:
+      tags:
+      - Contacts
+      summary: Get contacts with pagination
+      description: Returns 15 contacts at a time for a given page number
+      operationId: getContacts
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: getContactsItem
+        description: Get Contacts
+        required: false
+        schema:
+          $ref: "#/definitions/GetContacts"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/PaginatedContactListResponse"
+        "404":
+          description: URL Not Found
+definitions:
+  Register:
+    type: object
+    required:
+    - lastName
+    - login
+    - password
+    properties:
+      lastName:
+        type: string
+        example: Doe
+      login:
+        type: string
+        example: jane@example.com
+      password:
+        type: string
+        example: mypassword
+      email:
+        type: string
+        example: jane@example.com
+      phone:
+        type: string
+        example: "+14074567890"
+  Login:
+    type: object
+    required:
+    - login
+    - password
+    properties:
+      login:
+        type: string
+        example: janedoe@example.com
+      password:
+        type: string
+        example: mypassword
+  UpdateUser:
+    type: object
+    required:
+    - email
+    - password
+    - phone
+    - userId
+    properties:
+      userId:
+        type: integer
+        example: 1
+      email:
+        type: string
+        example: newemail@yahoo.com
+      phone:
+        type: string
+        example: "+11234567890"
+      password:
+        type: string
+        example: newpassword123
+  DeleteUser:
+    type: object
+    required:
+    - userId
+    properties:
+      userId:
+        type: integer
+        example: 1
+  AddContact:
+    type: object
+    required:
+    - email
+    - firstName
+    - lastName
+    - phone
+    - userId
+    properties:
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Smith
+      phone:
+        type: string
+        example: "+11234567890"
+      email:
+        type: string
+        example: john@example.com
+      userId:
+        type: integer
+        example: 1
+  UpdateContact:
+    type: object
+    required:
+    - contactId
+    - email
+    - firstName
+    - lastName
+    - phone
+    - userId
+    properties:
+      contactId:
+        type: integer
+        example: 1
+      userId:
+        type: integer
+        example: 1
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Smith
+      phone:
+        type: string
+        example: "+11234567890"
+      email:
+        type: string
+        example: john@example.com
+  DeleteContact:
+    type: object
+    required:
+    - contactId
+    - userId
+    properties:
+      contactId:
+        type: integer
+        example: 1
+      userId:
+        type: integer
+        example: 1
+  SearchContact:
+    type: object
+    required:
+    - search
+    - userId
+    properties:
+      userId:
+        type: integer
+        example: 50
+      search:
+        type: string
+        example: John
+  SortContact:
+    type: object
+    required:
+    - sortBy
+    - userId
+    properties:
+      userId:
+        type: integer
+        example: 1
+      sortBy:
+        type: string
+        example: lastName
+        enum:
+        - firstName
+        - lastName
+        - email
+        - phone
+        - addDate
+      sortOrder:
+        type: string
+        example: ASC
+        enum:
+        - ASC
+        - DESC
+  GetContacts:
+    type: object
+    required:
+    - page
+    - userId
+    properties:
+      userId:
+        type: integer
+        example: 1
+      page:
+        type: integer
+        example: 1
+  Contact:
+    type: object
+    properties:
+      ID:
+        type: integer
+        example: 1
+      FirstName:
+        type: string
+        example: John
+      LastName:
+        type: string
+        example: Smith
+      Phone:
+        type: string
+        example: (555) 123-4567
+      Email:
+        type: string
+        example: john@example.com
+      AddDate:
+        type: string
+        example: 2024-01-01 00:00:00
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        example: ""
+  ContactListResponse:
+    type: object
+    properties:
+      contacts:
+        type: array
+        items:
+          $ref: "#/definitions/Contact"
+      error:
+        type: string
+        example: ""
+  PaginatedContactListResponse:
+    type: object
+    properties:
+      contacts:
+        type: array
+        items:
+          $ref: "#/definitions/Contact"
+      page:
+        type: integer
+        example: 1
+      totalPages:
+        type: integer
+        example: 4
+      total:
+        type: integer
+        example: 53
+      error:
+        type: string
+        example: ""
+  LoginResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 1
+      firstName:
+        type: string
+        example: Jane
+      lastName:
+        type: string
+        example: Doe
+      error:
+        type: string
+        example: ""
