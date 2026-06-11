@@ -92,6 +92,24 @@
               </div>
             </form>
 
+            <div class="sort-dropdown" id="sortDropdown">
+              <button
+                type="button"
+                class="sort-dropdown-trigger"
+                id="sortDropdownBtn"
+              >
+                <span id="sortDropdownText">Sort By: Newest</span>
+                <span class="sort-dropdown-arrow">⌄</span>
+              </button>
+
+              <div class="sort-dropdown-menu" id="sortDropdownMenu">
+                <button type="button" data-sort="addDate">Newest</button>
+                <button type="button" data-sort="lastName">Last Name</button>
+                <button type="button" data-sort="firstName">First Name</button>
+                <button type="button" data-sort="email">Email</button>
+                <button type="button" data-sort="phone">Phone</button>
+              </div>
+            </div>
             <div class="add-contact">
               <img
                 src="../assets/images/plus-lg.svg"
@@ -108,14 +126,20 @@
               </button>
             </div>
           </div>
-
-          <div class="contacts-count">
+          <div class="see-all-contacts">
             <img
               src="../assets/images/people-fill.svg"
               alt=""
               class="count-icon"
             />
-            <span id="contactsCount">See All Contacts</span>
+            <button
+              type="button"
+              id="seeAllContactsButton"
+              class="see-all-button"
+            >
+              See All Contacts
+            </button>
+            <span id="contactsCount"></span>
           </div>
         </div>
 
@@ -123,6 +147,123 @@
           <div id="contactsContainer" class="contacts-container"></div>
         </div>
       </section>
+
+      <div class="modal fade" id="editContactModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Contact</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <form id="editContactForm" novalidate>
+                <input type="hidden" id="editContactId" />
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="editContactFirstName" class="form-label"
+                      >First Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control custom-input"
+                      id="editContactFirstName"
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="editContactLastName" class="form-label"
+                      >Last Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control custom-input"
+                      id="editContactLastName"
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="editContactEmail" class="form-label">Email</label>
+                  <div class="input-icon-wrapper">
+                    <img
+                      src="../assets/images/envelope-fill.svg"
+                      alt="Email icon"
+                      class="input-icon"
+                    />
+
+                    <input
+                      type="email"
+                      class="form-control custom-input"
+                      id="editContactEmail"
+                      placeholder="Enter email"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="editContactPhone" class="form-label"
+                    >Phone Number</label
+                  >
+                  <div class="input-icon-wrapper">
+                    <img
+                      src="../assets/images/telephone-fill.svg"
+                      alt="Phone icon"
+                      class="input-icon"
+                    />
+
+                    <input
+                      type="tel"
+                      class="form-control custom-input"
+                      id="editContactPhone"
+                      placeholder="Enter phone number"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Date Created</label>
+                  <div class="date-created">
+                    <img
+                      src="../assets/images/clock-fill.svg"
+                      alt=""
+                      class="calendar-icon"
+                    />
+                    <p id="editContactDateCreated"></p>
+                  </div>
+                </div>
+
+                <p id="editContactMessage" class="message"></p>
+
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="modal-delete-button"
+                    id="deleteContactButton"
+                  >
+                    Delete
+                  </button>
+
+                  <button type="submit" class="btn-primary edit-button-actual">
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="modal fade" id="addContactModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -202,17 +343,6 @@
                       />
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">Date Created</label>
-                    <div class="date-created">
-                      <img
-                        src="../assets/images/clock-fill.svg"
-                        alt=""
-                        class="calendar-icon"
-                      />
-                      <p id="contactDateCreated">May 20, 2026</p>
-                    </div>
-                  </div>
                 </div>
 
                 <p id="addContactMessage" class="message"></p>
@@ -223,7 +353,7 @@
                     class="btn-primary modal-delete-button"
                     data-bs-dismiss="modal"
                   >
-                    Delete
+                    Cancel
                   </button>
                   <button type="submit" class="btn-primary edit-button-actual">
                     Save

@@ -88,8 +88,7 @@
 	}
  
 	function returnWithError( $err )
-	{
-		$retValue = '{"error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
-	}
+{
+    sendResultInfoAsJson( json_encode(["error" => $err]) );
+}
 ?>

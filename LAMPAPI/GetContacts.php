@@ -27,7 +27,7 @@
 		$totalPages = ceil($total / $limit);
 
 		// Get contacts for this page
-		$stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, AddDate FROM Contacts WHERE UserID=? ORDER BY LastName, FirstName LIMIT ? OFFSET ?");
+		$stmt = $conn->prepare("SELECT ID, FirstName, LastName, Phone, Email, AddDate FROM Contacts WHERE UserID=? ORDER BY AddDate DESC LIMIT ? OFFSET ?");
 		$stmt->bind_param("iii", $inData["userId"], $limit, $offset);
 		$stmt->execute();
 		$result = $stmt->get_result();
