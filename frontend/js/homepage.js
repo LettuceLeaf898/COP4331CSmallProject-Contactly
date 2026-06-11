@@ -27,6 +27,210 @@ document.addEventListener("DOMContentLoaded", function () {
   const editContactForm = document.getElementById("editContactForm");
   const deleteContactButton = document.getElementById("deleteContactButton");
 
+  // ============================================
+  // Search autocomplete (omnibox-style dropdown)
+  // ============================================
+  const searchInputEl = document.getElementById("search");
+  const suggestionsBox = document.getElementById("searchSuggestions");
+  const MAX_SUGGESTIONS = 6;
+
+  let suggestDebounceTimer = null;
+  let suggestionContacts = [];
+  let activeSuggestionIndex = -1;
+
+  if (searchInputEl && suggestionsBox) {
+    searchInputEl.addEventListener("input", function () {
+      const text = searchInputEl.value.trim();
+
+      clearTimeout(suggestDebounceTimer);
+
+      if (text === "") {
+        hideSuggestions();
+        return;
+      }
+
+      suggestDebounceTimer = setTimeout(function () {
+        fetchSuggestions(text);
+      }, 200);
+    });
+
+    searchInputEl.addEventListener("focus", function () {
+      const text = searchInputEl.value.trim();
+      if (text !== "") {
+        fetchSuggestions(text);
+      }
+    });
+
+    searchInputEl.addEventListener("keydown", function (event) {
+      if (!suggestionsBox.classList.contains("show")) {
+        return;
+      }
+
+      const rows = suggestionsBox.querySelectorAll(".suggestion-item");
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveActiveSuggestion(1, rows);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveActiveSuggestion(-1, rows);
+      } else if (event.key === "Enter") {
+        if (activeSuggestionIndex >= 0 && rows[activeSuggestionIndex]) {
+          event.preventDefault();
+          rows[activeSuggestionIndex].dispatchEvent(new Event("mousedown"));
+        } else {
+          // No row highlighted: let the form submit run the normal search
+          hideSuggestions();
+        }
+      } else if (event.key === "Escape") {
+        hideSuggestions();
+      }
+    });
+
+    // Close the dropdown when clicking anywhere outside the search bar
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".search-container")) {
+        hideSuggestions();
+      }
+    });
+  }
+
+  function fetchSuggestions(text) {
+    if (!userId) {
+      return;
+    }
+
+    fetch("/LAMPAPI/SearchContact.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: Number(userId),
+        search: text,
+      }),
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        // Ignore stale responses (user kept typing while this was in flight)
+        if (searchInputEl.value.trim() !== text) {
+          return;
+        }
+
+        if (data.error && data.error !== "") {
+          renderSuggestions([], text);
+          return;
+        }
+
+        renderSuggestions(data.contacts.slice(0, MAX_SUGGESTIONS), text);
+      })
+      .catch(function (error) {
+        console.error("Suggestion fetch error:", error);
+        hideSuggestions();
+      });
+  }
+
+  function renderSuggestions(contacts, query) {
+    suggestionsBox.innerHTML = "";
+    suggestionContacts = contacts;
+    activeSuggestionIndex = -1;
+
+    if (contacts.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "suggestion-empty";
+      empty.textContent = "No matching contacts";
+      suggestionsBox.appendChild(empty);
+      suggestionsBox.classList.add("show");
+      return;
+    }
+
+    contacts.forEach(function (contact) {
+      const fullName = contact.FirstName + " " + contact.LastName;
+
+      const row = document.createElement("div");
+      row.className = "suggestion-item";
+
+      row.innerHTML = `
+        <img src="../assets/images/person-fill.svg" alt="" class="suggestion-icon" />
+        <span class="suggestion-name">${highlightMatch(fullName, query)}</span>
+        <span class="suggestion-secondary">${escapeHtml(contact.Email)} · ${escapeHtml(contact.Phone)}</span>
+      `;
+
+      // mousedown (not click) so it fires before the input loses focus
+      row.addEventListener("mousedown", function (event) {
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
+        selectSuggestion(contact);
+      });
+
+      suggestionsBox.appendChild(row);
+    });
+
+    // Final row: run the full search for the typed text
+    const searchRow = document.createElement("div");
+    searchRow.className = "suggestion-item suggestion-search-row";
+    searchRow.innerHTML = `
+      <img src="../assets/images/search.svg" alt="" class="suggestion-icon" />
+      <span class="suggestion-name">Search for "${escapeHtml(query)}"</span>
+    `;
+    searchRow.addEventListener("mousedown", function (event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      hideSuggestions();
+      searchForm.dispatchEvent(new Event("submit", { cancelable: true }));
+    });
+    suggestionsBox.appendChild(searchRow);
+
+    suggestionsBox.classList.add("show");
+  }
+
+  function selectSuggestion(contact) {
+    contactsById[contact.ID] = contact;
+
+    searchInputEl.value = contact.FirstName + " " + contact.LastName;
+    hideSuggestions();
+
+    removeLoadMoreButton();
+    contactsContainer.innerHTML = "";
+    contactsCount.textContent = "1 Contact";
+    renderContacts([contact]);
+  }
+
+  function moveActiveSuggestion(direction, rows) {
+    if (rows.length === 0) {
+      return;
+    }
+
+    if (activeSuggestionIndex >= 0 && rows[activeSuggestionIndex]) {
+      rows[activeSuggestionIndex].classList.remove("active");
+    }
+
+    activeSuggestionIndex += direction;
+
+    if (activeSuggestionIndex < 0) {
+      activeSuggestionIndex = rows.length - 1;
+    } else if (activeSuggestionIndex >= rows.length) {
+      activeSuggestionIndex = 0;
+    }
+
+    rows[activeSuggestionIndex].classList.add("active");
+    rows[activeSuggestionIndex].scrollIntoView({ block: "nearest" });
+  }
+
+  function hideSuggestions() {
+    suggestionsBox.classList.remove("show");
+    suggestionsBox.innerHTML = "";
+    suggestionContacts = [];
+    activeSuggestionIndex = -1;
+  }
+  // ============================================
+  // End search autocomplete
+  // ============================================
+
   if (deleteContactButton) {
     deleteContactButton.addEventListener("click", function () {
       const contactId = document.getElementById("editContactId").value;
@@ -242,6 +446,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (searchForm) {
     searchForm.addEventListener("submit", function (event) {
       event.preventDefault();
+
+      hideSuggestions();
 
       const searchInput = document.getElementById("search");
       const searchText = searchInput.value.trim();
@@ -641,4 +847,36 @@ function formatDate(dateString) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+// Escapes HTML special characters so contact data can't inject markup
+function escapeHtml(text) {
+  if (text === null || text === undefined) {
+    return "";
+  }
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Escapes regex special characters in the user's query
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Bolds the part of the name that matches what the user typed
+function highlightMatch(text, query) {
+  const safeText = escapeHtml(text);
+  const safeQuery = escapeHtml(query);
+
+  if (safeQuery === "") {
+    return safeText;
+  }
+
+  const regex = new RegExp("(" + escapeRegex(safeQuery) + ")", "i");
+  return safeText.replace(regex, "<strong>$1</strong>");
 }

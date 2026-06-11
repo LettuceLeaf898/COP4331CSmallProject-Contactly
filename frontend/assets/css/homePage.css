@@ -568,3 +568,80 @@ p {
 .sort-dropdown-menu button:hover {
   background-color: #26346d;
 }
+
+/* ============================================
+   Search autocomplete suggestions (omnibox)
+   ============================================ */
+
+.search-suggestions {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  z-index: 1100;
+  text-align: left;
+}
+
+.search-suggestions.show {
+  display: block;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background-color: #f3f4f6;
+}
+
+.suggestion-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.suggestion-name {
+  font-size: 16px;
+  color: #142153;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.suggestion-name strong {
+  font-weight: 700;
+}
+
+.suggestion-secondary {
+  color: #888;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.suggestion-search-row .suggestion-name {
+  color: #333;
+  font-weight: 400;
+}
+
+.suggestion-empty {
+  padding: 14px 18px;
+  color: #888;
+  font-size: 15px;
+}
